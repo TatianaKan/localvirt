@@ -51,3 +51,8 @@ const superman = getData(siteUrl3);
 getData(siteUrl)
     .then((movies) => movies.forEach(movie => addMovieToList(movie)))
     .catch(err => console.log(err));
+
+inputSearch.addEventListener('keyup', (e) => {
+    const searchString = e.target.value;
+    console.log(searchString);
+});
