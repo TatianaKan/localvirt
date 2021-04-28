@@ -1,10 +1,16 @@
 const apiKey = '9d28742e';
-const search = 'Iron man';
-const siteUrl = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search}`;
+// const search = 'Iron man';
+// const siteUrl = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search}`;
+const siteUrl = `http://www.omdbapi.com/?apikey=${apiKey}`;
+let searchLast = ' ';
 
 const getData = (url) => fetch(url)
     .then((res) => res.json())
-    .then((json) => json.Search);
+    .then((json) => {
+        if (!json || !json.Search) throw Error('Сервер вернул неверный объект');
+
+        return json.Search;
+    });
 
 // const getData = (url) => new Promise((resolve, reject) => {
 //     const xhr = new XMLHttpRequest(); ///запрос к серверу
@@ -25,14 +31,14 @@ const getData = (url) => fetch(url)
 //     xhr.onerror = (err) => reject(err); ///ошибка
 // });
 
-const search2 = 'Batman';
-const search3 = 'Superman';
-const siteUrl2 = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search2}`;
-const siteUrl3 = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search3}`;
+// const search2 = 'Batman';
+// const search3 = 'Superman';
+// const siteUrl2 = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search2}`;
+// const siteUrl3 = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search3}`;
 
-const ironman = getData(siteUrl);
-const batman = getData(siteUrl2);
-const superman = getData(siteUrl3);
+// const ironman = getData(siteUrl);
+// const batman = getData(siteUrl2);
+// const superman = getData(siteUrl3);
 
 // ironman.then((movies) => movies.forEach(movie => addMovieToList(movie)));
 // batman.then((movies) => movies.forEach(movie => addMovieToList(movie)));
@@ -48,11 +54,21 @@ const superman = getData(siteUrl3);
 // then((movies) => movies.forEach((movie) => addMovieToList(movie)));
 
 
-getData(siteUrl)
-    .then((movies) => movies.forEach(movie => addMovieToList(movie)))
-    .catch(err => console.log(err));
+
 
 inputSearch.addEventListener('keyup', (e) => {
     const searchString = e.target.value;
-    console.log(searchString);
+
+    delay(() => {
+        if (searchString && searchString.length > 3 && searchString !== searchLast) {
+            console.log(searchString);
+
+            getData(`${siteUrl}&s=${searchString}`)
+                .then((movies) => movies.forEach((movie) => addMovieToList(movie)))
+                .catch((err) => console.log(err));
+        }
+
+        searchLast = searchString.trim();
+    }, 2000);
+
 });

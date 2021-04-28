@@ -58,7 +58,7 @@ border: 1px solid rgba(5, 1, 41, 0.067);
     document.head.appendChild(headStyle);
 };
 
-const createElement = (type, attr, container) => {
+const createElement = (type, attr, container, pos) => {
     const el = document.createElement(type);
     for (let key in attr) {
 
@@ -71,7 +71,8 @@ const createElement = (type, attr, container) => {
     }
     // console.log(attr);
 
-    if (container) container.append(el);
+    if (container && !pos) container.append(el);
+    if (container && pos) container.prepend(el);
     return el;
 };
 
@@ -117,16 +118,18 @@ const createSearchBox = (container) => {
 
 const createMarkup = () => {
     
-    const container = createElement('div', {class: 'container'});
+    const container = createElement('div', {class: 'container'},  document.body, true);
     const movies = document.createElement('div');
 
     createSearchBox(container);
-    movies.classList.add('movies')
+    movieList = createElement('div', {class: 'movies'}, container);
+    
+    // movies.classList.add('movies')
     // container.classList.add('container');
-    container.appendChild(movies);
+    // container.appendChild(movies);
 
-    document.body.prepend(container);
-    movieList = document.querySelector('.movies');
+    // document.body.prepend(container);
+    // movieList = document.querySelector('.movies');
     // inputSearch = document.querySelector('.search')
 };
 
@@ -142,6 +145,15 @@ const addMovieToList = (movie) => {
     item.appendChild(img);
     movieList.appendChild(item);
 };
+
+const delay = (() => {
+    let timer = 0;
+
+    return (clb, ms) => {
+        if (timer !==null) clearTimeout(timer);
+        timer=setTimeout(clb, ms);
+    }
+})();
 
 createMarkup();
 createSryle();
