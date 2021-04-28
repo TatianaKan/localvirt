@@ -1,7 +1,7 @@
 const apiKey = '9d28742e';
 // const search = 'Iron man';
 // const siteUrl = `http://www.omdbapi.com/?apikey=${apiKey}&s=${search}`;
-const siteUrl = `http://www.omdbapi.com/?apikey=${apiKey}`;
+const siteUrl = `https://www.omdbapi.com/?apikey=${apiKey}`;
 let searchLast = ' ';
 
 const getData = (url) => fetch(url)
@@ -48,12 +48,9 @@ const getData = (url) => fetch(url)
 // all([ironman, batman, superman]).
 // then((res) => res.forEach((movies) => movies.forEach((movie) => addMovieToList(movie))));
 
-
 // Promise.
 // race([ironman, batman, superman]).
 // then((movies) => movies.forEach((movie) => addMovieToList(movie)));
-
-
 
 
 inputSearch.addEventListener('keyup', (e) => {
@@ -61,14 +58,12 @@ inputSearch.addEventListener('keyup', (e) => {
 
     delay(() => {
         if (searchString && searchString.length > 3 && searchString !== searchLast) {
-            console.log(searchString);
+            if (!triggerMode) clearMoviesMarkup();
 
             getData(`${siteUrl}&s=${searchString}`)
                 .then((movies) => movies.forEach((movie) => addMovieToList(movie)))
                 .catch((err) => console.log(err));
         }
-
         searchLast = searchString.trim();
     }, 2000);
-
 });

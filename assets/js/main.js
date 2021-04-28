@@ -1,5 +1,6 @@
 let movieList = null;
 let inputSearch = null;
+let triggerMode = false;
 
 const createSryle = () => {
     const headStyle = document.createElement('style');
@@ -58,11 +59,10 @@ border: 1px solid rgba(5, 1, 41, 0.067);
     document.head.appendChild(headStyle);
 };
 
-const createElement = (type, attr, container, pos) => {
+const createElement = (type, attr, container, pos, evt = null, handler = null) => {
     const el = document.createElement(type);
     for (let key in attr) {
 
-        
         if (key !== 'innerHTML') {
             el.setAttribute(key, attr[key]);
         } else {
@@ -70,11 +70,14 @@ const createElement = (type, attr, container, pos) => {
         }
     }
     // console.log(attr);
-
     if (container && !pos) container.append(el);
     if (container && pos) container.prepend(el);
+
+    if (evt && handler) el.addEventListener(evt, handler);
     return el;
 };
+
+const triggerModeHandler = () => triggerMode = !triggerMode;
 
 const createSearchBox = (container) => {
 
@@ -95,7 +98,7 @@ const createSearchBox = (container) => {
         class: "search__checkbox",
         id: "checkbox",
         type: "checkbox"
-    }, searchBox);
+    }, searchBox, false, 'click', triggerModeHandler);
 
     createElement('label', {
         class: "search__label-checkbox",
@@ -113,17 +116,16 @@ const createSearchBox = (container) => {
     // label
     // checkbox
     // labcheck
-
 };
 
 const createMarkup = () => {
-    
-    const container = createElement('div', {class: 'container'},  document.body, true);
+
+    const container = createElement('div', { class: 'container' }, document.body, true);
     const movies = document.createElement('div');
 
     createSearchBox(container);
-    movieList = createElement('div', {class: 'movies'}, container);
-    
+    movieList = createElement('div', { class: 'movies' }, container);
+
     // movies.classList.add('movies')
     // container.classList.add('container');
     // container.appendChild(movies);
@@ -135,25 +137,32 @@ const createMarkup = () => {
 
 const addMovieToList = (movie) => {
     // console.log(movie);
-    const item = document.createElement('div');
-    const img = document.createElement("img");
+    // const item = document.createElement('div');
+    // const img = document.createElement("img");
+    const item = createElement('div', { class: 'movie' }, movieList);
+    const img = createElement('img', {
+        class: 'movie__image',
+        src: /^(http|https):\/\//i.test(movie.Poster) ? movie.Poster : 'img/no-img.jpg'
+    }, item);
 
-    img.src = movie.Poster;
-    img.classList.add('movie__image');
+    // img.src = movie.Poster;
+    // img.classList.add('movie__image');
 
-    item.classList.add('movie')
-    item.appendChild(img);
-    movieList.appendChild(item);
+    // item.classList.add('movie')
+    // item.appendChild(img);
+    // movieList.appendChild(item);
 };
 
 const delay = (() => {
     let timer = 0;
 
     return (clb, ms) => {
-        if (timer !==null) clearTimeout(timer);
-        timer=setTimeout(clb, ms);
+        if (timer !== null) clearTimeout(timer);
+        timer = setTimeout(clb, ms);
     }
 })();
+
+const clearMoviesMarkup = () => movieList && (movieList.innerHTML = '');
 
 createMarkup();
 createSryle();
